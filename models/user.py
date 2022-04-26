@@ -5,7 +5,7 @@ from db import db
 class UserModel(db.Model):
     __tablename__ = 'users'
 
-    u_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     u_name = db.Column(db.String(80))
     u_pass = db.Column(db.String(80))
 
@@ -14,7 +14,7 @@ class UserModel(db.Model):
         self.u_pass = password
 
     def json(self):
-        return {'id': self.u_id, 'username': self.u_name, 'password': self.u_pass}
+        return {'id': self.id, 'username': self.u_name, 'password': self.u_pass}
 
     def save_to_db(self):
         db.session.add(self)
@@ -26,7 +26,7 @@ class UserModel(db.Model):
 
     @classmethod
     def find_by_id(cls, _id):
-        return cls.query.filter_by(u_id=_id).first()
+        return cls.query.filter_by(id=_id).first()
 
     @classmethod
     def find_all(cls):
