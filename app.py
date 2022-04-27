@@ -11,18 +11,14 @@ from resources.store import Store, Stores
 
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
+
+app.config['DEBUG'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','sqlite:///data.db')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.secret_key = 'jose'
 api = Api(app)
-
-
-# @app.before_request
-# def create_tables():
-#     db.create_all()
-
 
 jwt = JWT(app, authenticate, identity)  # /auth
 
@@ -37,4 +33,10 @@ api.add_resource(UserList, '/users')
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
+
+    if app.config['DEBUG']:
+        @app.before_request
+        def create_tables():
+            db.create_all()
+
     app.run(port=5000, debug=True)
