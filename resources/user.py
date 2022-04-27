@@ -1,7 +1,13 @@
 from flask_restful import Resource, reqparse
+from blocklist import BLOCKLIST
 from models.user import UserModel
 from hmac import compare_digest
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    jwt_required,
+    get_jwt
+)
 
 
 class UserRegister(Resource):
@@ -61,3 +67,12 @@ class UserLogin(Resource):
             }, 200
 
         return {"message": "Invalid Credentials!"}, 401
+
+
+class UserLogout(Resource):
+    @classmethod
+    @jwt_required()
+    def delete(cls):
+        jti = get_jwt()['jti']
+        BLOCKLIST.add(jti)
+        return {'message': 'successfully logged out'}, 200
