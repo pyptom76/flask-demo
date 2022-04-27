@@ -11,3 +11,6 @@
 ## ubuntu nginx and uwsgi deployment
 - nginx.conf: nginx config
 - uwsgi.ini: uwsgi config
+
+## change flask_jwt to flask_jwt_extended
+pip install flask-jwt-extended
